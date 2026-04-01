@@ -2,21 +2,34 @@ import OpenAI from "openai";
 import { ClassificationResult, GarmentAttributes } from "./types";
 import fs from "fs";
 
-const openrouterClient = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
+let _openrouterClient: OpenAI | null = null;
+let _geminiClient: OpenAI | null = null;
 
-const geminiClient = new OpenAI({
-  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
-  apiKey: process.env.GEMINI_API_KEY,
-});
+function getOpenrouterClient(): OpenAI {
+  if (!_openrouterClient) {
+    _openrouterClient = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
+    });
+  }
+  return _openrouterClient;
+}
+
+function getGeminiClient(): OpenAI {
+  if (!_geminiClient) {
+    _geminiClient = new OpenAI({
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
+      apiKey: process.env.GEMINI_API_KEY,
+    });
+  }
+  return _geminiClient;
+}
 
 function getClient(model: string): { client: OpenAI; modelId: string } {
   if (model.startsWith("gemini-")) {
-    return { client: geminiClient, modelId: model };
+    return { client: getGeminiClient(), modelId: model };
   }
-  return { client: openrouterClient, modelId: model };
+  return { client: getOpenrouterClient(), modelId: model };
 }
 
 const CLASSIFICATION_PROMPT = `You are a fashion garment classifier. Analyze this image and return a JSON object with two fields:

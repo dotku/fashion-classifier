@@ -1,10 +1,17 @@
 import OpenAI from "openai";
 import { ImageRecord } from "./types";
 
-const client = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
+let _client: OpenAI | null = null;
+
+function getClient(): OpenAI {
+  if (!_client) {
+    _client = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
+    });
+  }
+  return _client;
+}
 
 const EMBEDDING_MODEL = "openai/text-embedding-3-small";
 const RERANK_MODEL = "anthropic/claude-haiku-4-5";
@@ -19,7 +26,7 @@ export async function translateToEnglish(text: string): Promise<string> {
   if (nonAscii === 0) return text;
 
   try {
-    const response = await client.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: TRANSLATE_MODEL,
       max_tokens: 256,
       messages: [
@@ -69,7 +76,7 @@ export function buildEmbeddingText(record: {
  * Generate an embedding vector for the given text.
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await client.embeddings.create({
+  const response = await getClient().embeddings.create({
     model: EMBEDDING_MODEL,
     input: text,
   });
@@ -197,7 +204,7 @@ ${toRerank.map((c, i) => `[${c.id}] ${c.description}`).join("\n")}
 Return ONLY a JSON array of matching IDs in order of relevance (most relevant first). Return at most ${topK} IDs. No extra text.`;
 
   try {
-    const response = await client.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: RERANK_MODEL,
       max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],
