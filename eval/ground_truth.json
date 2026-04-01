@@ -1,0 +1,602 @@
+[
+  {
+    "image": "eval_images/001.jpg",
+    "expected": {
+      "garment_type": "outfit",
+      "style": "casual",
+      "material": "denim",
+      "pattern": "solid",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/002.jpg",
+    "expected": {
+      "garment_type": "outfit",
+      "style": "casual",
+      "material": "denim, cotton, suede",
+      "pattern": "solid",
+      "season": "fall",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/003.jpg",
+    "expected": {
+      "garment_type": "top",
+      "style": "casual",
+      "material": "denim",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/004.jpg",
+    "expected": {
+      "garment_type": "shorts",
+      "style": "casual",
+      "material": "denim",
+      "pattern": "geometric",
+      "season": "fall",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/005.jpg",
+    "expected": {
+      "garment_type": "sweater",
+      "style": "minimalist",
+      "material": "knit",
+      "pattern": "solid",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/006.jpg",
+    "expected": {
+      "garment_type": "shirt",
+      "style": "casual",
+      "material": "cotton",
+      "pattern": "checkered",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/007.jpg",
+    "expected": {
+      "garment_type": "jacket",
+      "style": "casual",
+      "material": "linen",
+      "pattern": "solid",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/008.jpg",
+    "expected": {
+      "garment_type": "shirt",
+      "style": "casual",
+      "material": "polyester",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/009.jpg",
+    "expected": {
+      "garment_type": "shorts",
+      "style": "casual",
+      "material": "polyester",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/010.jpg",
+    "expected": {
+      "garment_type": "sweater",
+      "style": "casual",
+      "material": "knit",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/011.jpg",
+    "expected": {
+      "garment_type": "sweater",
+      "style": "bohemian",
+      "material": "knit",
+      "pattern": "solid",
+      "season": "fall",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/012.jpg",
+    "expected": {
+      "garment_type": "suit",
+      "style": "casual",
+      "material": "denim",
+      "pattern": "striped",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/013.jpg",
+    "expected": {
+      "garment_type": "coat",
+      "style": "minimalist",
+      "material": "knit",
+      "pattern": "solid",
+      "season": "fall",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/014.jpg",
+    "expected": {
+      "garment_type": "shirt",
+      "style": "casual",
+      "material": "polyester",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/015.jpg",
+    "expected": {
+      "garment_type": "dress",
+      "style": "bohemian",
+      "material": "polyester",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "festival",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/016.jpg",
+    "expected": {
+      "garment_type": "dress",
+      "style": "bohemian",
+      "material": "polyester",
+      "pattern": "floral",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/017.jpg",
+    "expected": {
+      "garment_type": "dress",
+      "style": "minimalist",
+      "material": "silk",
+      "pattern": "striped",
+      "season": "all-season",
+      "occasion": "workwear",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/018.jpg",
+    "expected": {
+      "garment_type": "shirt",
+      "style": "minimalist",
+      "material": "linen",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/019.jpg",
+    "expected": {
+      "garment_type": "blouse",
+      "style": "casual",
+      "material": "polyester",
+      "pattern": "solid",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/020.jpg",
+    "expected": {
+      "garment_type": "jacket",
+      "style": "minimalist",
+      "material": "leather",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/021.jpg",
+    "expected": {
+      "garment_type": "suit",
+      "style": "streetwear",
+      "material": "knit",
+      "pattern": "plaid",
+      "season": "fall",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/022.jpg",
+    "expected": {
+      "garment_type": "suit",
+      "style": "streetwear",
+      "material": "polyester",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/023.jpg",
+    "expected": {
+      "garment_type": "dress",
+      "style": "casual",
+      "material": "knit",
+      "pattern": "floral",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/024.jpg",
+    "expected": {
+      "garment_type": "blazer",
+      "style": "streetwear",
+      "material": "linen",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/025.jpg",
+    "expected": {
+      "garment_type": "blazer",
+      "style": "casual",
+      "material": "polyester",
+      "pattern": "solid",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/026.jpg",
+    "expected": {
+      "garment_type": "shorts",
+      "style": "streetwear",
+      "material": "polyester",
+      "pattern": "abstract",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "Africa"
+    }
+  },
+  {
+    "image": "eval_images/027.jpg",
+    "expected": {
+      "garment_type": "shirt",
+      "style": "casual",
+      "material": "denim",
+      "pattern": "striped",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/028.jpg",
+    "expected": {
+      "garment_type": "shorts",
+      "style": "casual",
+      "material": "denim",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/029.jpg",
+    "expected": {
+      "garment_type": "shirt",
+      "style": "casual",
+      "material": "knit",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/030.jpg",
+    "expected": {
+      "garment_type": "sweater",
+      "style": "casual",
+      "material": "knit",
+      "pattern": "solid",
+      "season": "fall",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/031.jpg",
+    "expected": {
+      "garment_type": "blouse",
+      "style": "bohemian",
+      "material": "polyester",
+      "pattern": "animal print,polka dot,solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/032.jpg",
+    "expected": {
+      "garment_type": "suit",
+      "style": "streetwear",
+      "material": "linen",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/033.jpg",
+    "expected": {
+      "garment_type": "set",
+      "style": "casual",
+      "material": "knit",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/034.jpg",
+    "expected": {
+      "garment_type": "suit",
+      "style": "vintage",
+      "material": "polyester",
+      "pattern": "plaid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/035.jpg",
+    "expected": {
+      "garment_type": "blouse",
+      "style": "casual",
+      "material": "cotton",
+      "pattern": "floral",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/036.jpg",
+    "expected": {
+      "garment_type": "jacket",
+      "style": "streetwear",
+      "material": "denim",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/037.jpg",
+    "expected": {
+      "garment_type": "mix",
+      "style": "minimalist",
+      "material": "mix",
+      "pattern": "plaid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/038.jpg",
+    "expected": {
+      "garment_type": "shirt",
+      "style": "casual",
+      "material": "polyester",
+      "pattern": "geometric",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/039.jpg",
+    "expected": {
+      "garment_type": "sweater",
+      "style": "minimalist",
+      "material": "knit",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/040.jpg",
+    "expected": {
+      "garment_type": "pants",
+      "style": "streetwear",
+      "material": "denim",
+      "pattern": "solid",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/041.jpg",
+    "expected": {
+      "garment_type": "shirt",
+      "style": "casual",
+      "material": "cotton",
+      "pattern": "striped",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/042.jpg",
+    "expected": {
+      "garment_type": "blouse",
+      "style": "minimalist",
+      "material": "silk",
+      "pattern": "floral,solid,striped",
+      "season": "spring",
+      "occasion": "workwear",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/043.jpg",
+    "expected": {
+      "garment_type": "suit",
+      "style": "minimalist",
+      "material": "polyester",
+      "pattern": "striped",
+      "season": "all-season",
+      "occasion": "workwear",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/044.jpg",
+    "expected": {
+      "garment_type": "jacket",
+      "style": "vintage",
+      "material": "wool",
+      "pattern": "tweed",
+      "season": "fall",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/045.jpg",
+    "expected": {
+      "garment_type": "jacket",
+      "style": "formal",
+      "material": "polyester",
+      "pattern": "plaid",
+      "season": "all-season",
+      "occasion": "workwear",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/046.jpg",
+    "expected": {
+      "garment_type": "blouse",
+      "style": "bohemian",
+      "material": "linen",
+      "pattern": "solid",
+      "season": "summer",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/047.jpg",
+    "expected": {
+      "garment_type": "pants",
+      "style": "casual",
+      "material": "denim",
+      "pattern": "solid",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "unknown"
+    }
+  },
+  {
+    "image": "eval_images/048.jpg",
+    "expected": {
+      "garment_type": "jacket",
+      "style": "streetwear",
+      "material": "leather",
+      "pattern": "striped",
+      "season": "all-season",
+      "occasion": "everyday",
+      "location_continent": "North America"
+    }
+  },
+  {
+    "image": "eval_images/049.jpg",
+    "expected": {
+      "garment_type": "pants",
+      "style": "streetwear",
+      "material": "polyester",
+      "pattern": "floral",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  },
+  {
+    "image": "eval_images/050.jpg",
+    "expected": {
+      "garment_type": "skirt",
+      "style": "bohemian",
+      "material": "denim",
+      "pattern": "solid",
+      "season": "spring",
+      "occasion": "everyday",
+      "location_continent": "Europe"
+    }
+  }
+]

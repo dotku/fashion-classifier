@@ -1,65 +1,136 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect, useCallback, useRef } from "react";
+import { ImageRecord, FilterOptions } from "@/lib/types";
+import UploadModal from "./components/UploadModal";
+import FilterSidebar from "./components/FilterSidebar";
+import ImageGrid from "./components/ImageGrid";
+import ImageDetail from "./components/ImageDetail";
 
 export default function Home() {
+  const [images, setImages] = useState<ImageRecord[]>([]);
+  const [filters, setFilters] = useState<FilterOptions>({});
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const [selectedImage, setSelectedImage] = useState<ImageRecord | null>(null);
+  const [showUpload, setShowUpload] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+
+  const fetchImages = useCallback(async () => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (debouncedSearch) params.set("search", debouncedSearch);
+    for (const [k, v] of Object.entries(activeFilters)) {
+      if (v) params.set(k, v);
+    }
+    try {
+      const res = await fetch(`/api/images?${params}`);
+      const data = await res.json();
+      setImages(data);
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  }, [debouncedSearch, activeFilters]);
+
+  const fetchFilters = useCallback(async () => {
+    try {
+      const res = await fetch("/api/filters");
+      const data = await res.json();
+      setFilters(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchImages();
+  }, [fetchImages]);
+
+  useEffect(() => {
+    fetchFilters();
+  }, [fetchFilters]);
+
+  const handleFilterChange = (key: string, value: string) => {
+    setActiveFilters(prev => {
+      const next = { ...prev };
+      if (value) next[key] = value;
+      else delete next[key];
+      return next;
+    });
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => setDebouncedSearch(value), 300);
+  };
+
+  const handleUploaded = () => {
+    fetchImages();
+    fetchFilters();
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-gray-900">Fashion Inspiration Library</h1>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="lg:hidden px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Filters
+            </button>
+            <button
+              onClick={() => setShowUpload(true)}
+              className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              Upload Photos
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 py-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar - hidden on mobile unless toggled */}
+          <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
+            <FilterSidebar
+              filters={filters}
+              activeFilters={activeFilters}
+              onFilterChange={handleFilterChange}
+              onClearFilters={() => { setActiveFilters({}); setSearch(""); }}
+              search={search}
+              onSearchChange={handleSearchChange}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+
+          {/* Grid */}
+          <div className="flex-1">
+            {loading ? (
+              <div className="flex justify-center py-20">
+                <div className="animate-spin h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full" />
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-gray-500 mb-4">{images.length} image(s)</p>
+                <ImageGrid images={images} onSelect={setSelectedImage} />
+              </>
+            )}
+          </div>
         </div>
       </main>
+
+      {/* Modals */}
+      <UploadModal open={showUpload} onClose={() => setShowUpload(false)} onUploaded={handleUploaded} />
+      {selectedImage && <ImageDetail image={selectedImage} onClose={() => setSelectedImage(null)} onDeleted={() => { fetchImages(); fetchFilters(); }} />}
     </div>
   );
 }
