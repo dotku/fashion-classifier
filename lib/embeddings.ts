@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { ImageRecord } from "./types";
+import { ImageRecord, GarmentAttributes } from "./types";
 
 let _client: OpenAI | null = null;
 
@@ -47,7 +47,7 @@ export async function translateToEnglish(text: string): Promise<string> {
  */
 export function buildEmbeddingText(record: {
   description: string;
-  attributes: Record<string, unknown>;
+  attributes: GarmentAttributes | Record<string, unknown>;
   annotations?: { tags: string[]; notes: string }[];
 }): string {
   const attrs = record.attributes;
@@ -133,7 +133,7 @@ const TERM_MAP: Record<string, string[]> = {
   "春": ["spring"], "夏": ["summer"], "秋": ["fall", "autumn"], "冬": ["winter"],
   // Occasions
   "日常": ["everyday", "casual"], "晚装": ["evening"], "婚礼": ["wedding"],
-  "工作": ["work", "workwear"], "运动": ["athletic"],
+  "工作": ["work", "workwear"],
 };
 
 /**

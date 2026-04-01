@@ -128,7 +128,7 @@ export function parseClassificationOutput(raw: string): ClassificationResult {
     throw new Error("Missing or invalid 'attributes' field");
   }
 
-  const attrs = parsed.attributes;
+  const attrs = parsed.attributes as Record<string, unknown>;
   const result: ClassificationResult = {
     description: parsed.description,
     attributes: {
