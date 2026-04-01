@@ -42,3 +42,24 @@ export interface ClassificationResult {
 export interface FilterOptions {
   [key: string]: string[];
 }
+
+export interface SearchFeedback {
+  id: string;
+  query: string;
+  image_id: string;
+  rating: number; // -2 (completely irrelevant) to 2 (perfect match)
+  comment: string;
+  created_at: string;
+}
+
+export interface SearchImpression {
+  query: string;
+  image_id: string;
+  display_count: number;
+  feedback_count: number;
+  avg_rating: number;
+  is_firm: boolean;       // auto-firmed when display >= 100 and feedback rate >= 3%
+  firm_action: string;    // "boost" | "penalize" | "remove" | "none"
+  admin_override: string | null; // admin can override firm_action
+  updated_at: string;
+}

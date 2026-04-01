@@ -54,13 +54,13 @@ export async function POST(req: NextRequest) {
       created_at: now.toISOString(),
     };
 
-    insertImage(record);
+    await insertImage(record);
 
     // Generate and store embedding for similarity search
     try {
       const embeddingText = buildEmbeddingText({ description: classification.description, attributes: classification.attributes });
       const embedding = await generateEmbedding(embeddingText);
-      updateImageEmbedding(id, embedding, embeddingText);
+      await updateImageEmbedding(id, embedding, embeddingText);
     } catch (err) {
       console.error("Embedding generation failed (non-fatal):", err);
     }

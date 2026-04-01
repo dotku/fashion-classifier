@@ -121,7 +121,12 @@ export default function Home() {
             ) : (
               <>
                 <p className="text-sm text-gray-500 mb-4">{images.length} image(s)</p>
-                <ImageGrid images={images} onSelect={setSelectedImage} />
+                <ImageGrid
+                  images={images}
+                  onSelect={setSelectedImage}
+                  searchQuery={debouncedSearch || undefined}
+                  onFeedbackSubmitted={fetchImages}
+                />
               </>
             )}
           </div>

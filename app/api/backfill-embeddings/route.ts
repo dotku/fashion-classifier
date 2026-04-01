@@ -5,7 +5,7 @@ import { generateEmbedding, buildEmbeddingText } from "@/lib/embeddings";
 export async function POST() {
   try {
     // Re-embed ALL images to include any annotations
-    const images = getImages();
+    const images = await getImages();
 
     if (images.length === 0) {
       return NextResponse.json({ message: "No images to embed", updated: 0 });
@@ -14,14 +14,14 @@ export async function POST() {
     let updated = 0;
     for (const image of images) {
       try {
-        const annotations = getAnnotations(image.id);
+        const annotations = await getAnnotations(image.id);
         const text = buildEmbeddingText({
           description: image.description,
           attributes: image.attributes,
           annotations: annotations.map(a => ({ tags: a.tags, notes: a.notes })),
         });
         const embedding = await generateEmbedding(text);
-        updateImageEmbedding(image.id, embedding, text);
+        await updateImageEmbedding(image.id, embedding, text);
         updated++;
       } catch (err) {
         console.error(`Failed to generate embedding for ${image.id}:`, err);

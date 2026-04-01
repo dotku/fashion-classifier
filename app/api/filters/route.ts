@@ -3,7 +3,7 @@ import { getFilterOptions } from "@/lib/db";
 
 export async function GET() {
   try {
-    const options = getFilterOptions();
+    const options = await getFilterOptions();
     return NextResponse.json(options);
   } catch (error) {
     console.error("Get filters error:", error);

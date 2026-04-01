@@ -105,6 +105,7 @@ export default function ImageDetail({ image, onClose, onDeleted }: ImageDetailPr
               <AttrRow label="Location" value={[attrs.location_city, attrs.location_country, attrs.location_continent].filter(v => v && v !== "unknown").join(", ") || "Unknown"} />
               <AttrRow label="Designer" value={image.designer} />
               <AttrRow label="Uploaded" value={new Date(image.upload_date).toLocaleDateString()} />
+              <AttrRow label="ID" value={image.id} />
             </div>
 
             <div className="border-t pt-4">

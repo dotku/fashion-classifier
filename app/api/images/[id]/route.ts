@@ -6,7 +6,7 @@ import fs from "fs";
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const filename = deleteImage(id);
+    const filename = await deleteImage(id);
 
     if (!filename) {
       return NextResponse.json({ error: "Image not found" }, { status: 404 });

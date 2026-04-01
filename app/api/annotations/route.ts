@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   if (!imageId) {
     return NextResponse.json({ error: "image_id required" }, { status: 400 });
   }
-  const annotations = getAnnotations(imageId);
+  const annotations = await getAnnotations(imageId);
   return NextResponse.json(annotations);
 }
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "image_id required" }, { status: 400 });
     }
 
-    const image = getImage(image_id);
+    const image = await getImage(image_id);
     if (!image) {
       return NextResponse.json({ error: "Image not found" }, { status: 404 });
     }
@@ -36,18 +36,18 @@ export async function POST(req: NextRequest) {
       created_at: new Date().toISOString(),
     };
 
-    insertAnnotation(annotation);
+    await insertAnnotation(annotation);
 
     // Regenerate embedding to include the new annotation
     try {
-      const allAnnotations = getAnnotations(image_id);
+      const allAnnotations = await getAnnotations(image_id);
       const text = buildEmbeddingText({
         description: image.description,
         attributes: image.attributes,
         annotations: allAnnotations.map(a => ({ tags: a.tags, notes: a.notes })),
       });
       const embedding = await generateEmbedding(text);
-      updateImageEmbedding(image_id, embedding, text);
+      await updateImageEmbedding(image_id, embedding, text);
     } catch (err) {
       console.error("Failed to update embedding after annotation (non-fatal):", err);
     }

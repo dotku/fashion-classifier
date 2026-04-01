@@ -1,21 +1,32 @@
 import OpenAI from "openai";
 import { ImageRecord, GarmentAttributes } from "./types";
 
-let _client: OpenAI | null = null;
+let _openrouterClient: OpenAI | null = null;
+let _geminiClient: OpenAI | null = null;
 
-function getClient(): OpenAI {
-  if (!_client) {
-    _client = new OpenAI({
+function getOpenrouterClient(): OpenAI {
+  if (!_openrouterClient) {
+    _openrouterClient = new OpenAI({
       baseURL: "https://openrouter.ai/api/v1",
       apiKey: process.env.OPENROUTER_API_KEY,
     });
   }
-  return _client;
+  return _openrouterClient;
+}
+
+function getGeminiClient(): OpenAI {
+  if (!_geminiClient) {
+    _geminiClient = new OpenAI({
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
+      apiKey: process.env.GEMINI_API_KEY,
+    });
+  }
+  return _geminiClient;
 }
 
 const EMBEDDING_MODEL = "openai/text-embedding-3-small";
-const RERANK_MODEL = "anthropic/claude-haiku-4-5";
-const TRANSLATE_MODEL = "anthropic/claude-haiku-4-5";
+const RERANK_MODEL = "gemini-2.5-flash";
+const TRANSLATE_MODEL = "gemini-2.5-flash";
 
 /**
  * Detect if text contains non-English characters and translate to English if needed.
@@ -26,7 +37,7 @@ export async function translateToEnglish(text: string): Promise<string> {
   if (nonAscii === 0) return text;
 
   try {
-    const response = await getClient().chat.completions.create({
+    const response = await getGeminiClient().chat.completions.create({
       model: TRANSLATE_MODEL,
       max_tokens: 256,
       messages: [
@@ -76,7 +87,7 @@ export function buildEmbeddingText(record: {
  * Generate an embedding vector for the given text.
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await getClient().embeddings.create({
+  const response = await getOpenrouterClient().embeddings.create({
     model: EMBEDDING_MODEL,
     input: text,
   });
@@ -103,13 +114,26 @@ export function cosineSimilarity(a: number[], b: number[]): number {
  * Maps common terms across languages (Chinese → English).
  */
 const TERM_MAP: Record<string, string[]> = {
-  // Colors
-  "红": ["red"], "红色": ["red"], "蓝": ["blue"], "蓝色": ["blue"],
-  "绿": ["green"], "绿色": ["green"], "黄": ["yellow"], "黄色": ["yellow"],
-  "黑": ["black"], "黑色": ["black"], "白": ["white"], "白色": ["white"],
-  "粉": ["pink"], "粉色": ["pink"], "紫": ["purple"], "紫色": ["purple"],
-  "橙": ["orange"], "橙色": ["orange"], "灰": ["gray", "grey"], "灰色": ["gray", "grey"],
-  "棕": ["brown"], "棕色": ["brown"], "金": ["gold"], "金色": ["gold"],
+  // Color synonyms (English)
+  "red": ["red", "pink", "rose", "blush", "crimson", "scarlet", "maroon", "burgundy", "cherry", "ruby"],
+  "pink": ["pink", "rose", "blush", "magenta", "fuchsia", "coral"],
+  "blue": ["blue", "navy", "cobalt", "teal", "azure", "indigo", "denim"],
+  "green": ["green", "olive", "emerald", "sage", "mint", "forest", "khaki"],
+  "yellow": ["yellow", "gold", "mustard", "amber", "lemon"],
+  "orange": ["orange", "coral", "tangerine", "peach", "rust"],
+  "purple": ["purple", "violet", "lavender", "plum", "mauve", "lilac"],
+  "brown": ["brown", "tan", "beige", "camel", "chocolate", "coffee", "cognac", "taupe"],
+  "black": ["black", "charcoal", "ebony", "onyx"],
+  "white": ["white", "cream", "ivory", "off-white", "ecru"],
+  "gray": ["gray", "grey", "silver", "charcoal", "slate"],
+  "grey": ["gray", "grey", "silver", "charcoal", "slate"],
+  // Colors (Chinese)
+  "红": ["red", "pink", "rose", "blush"], "红色": ["red", "pink", "rose"], "蓝": ["blue", "navy"], "蓝色": ["blue", "navy"],
+  "绿": ["green", "olive"], "绿色": ["green", "olive"], "黄": ["yellow", "gold"], "黄色": ["yellow", "gold"],
+  "黑": ["black"], "黑色": ["black"], "白": ["white", "cream"], "白色": ["white", "cream"],
+  "粉": ["pink", "rose", "blush"], "粉色": ["pink", "rose", "blush"], "紫": ["purple", "violet"], "紫色": ["purple", "violet"],
+  "橙": ["orange", "coral"], "橙色": ["orange", "coral"], "灰": ["gray", "grey"], "灰色": ["gray", "grey"],
+  "棕": ["brown", "tan"], "棕色": ["brown", "tan"], "金": ["gold", "golden"], "金色": ["gold", "golden"],
   "银": ["silver"], "银色": ["silver"], "米": ["beige", "cream"], "米色": ["beige", "cream"],
   // Garment types
   "裙": ["dress", "skirt"], "裙子": ["dress", "skirt"], "连衣裙": ["dress"],
@@ -137,10 +161,19 @@ const TERM_MAP: Record<string, string[]> = {
 };
 
 /**
- * Check if a word appears in text (partial match counts).
+ * Check if a word appears in text.
+ * Short words (<=4 chars) use word boundary matching to avoid false positives
+ * (e.g. "red" matching "structured"). Longer words use partial matching
+ * (e.g. "silk" matching "silky").
  */
 function matchesKeyword(text: string, word: string): boolean {
-  return text.toLowerCase().includes(word.toLowerCase());
+  const lowerWord = word.toLowerCase();
+  const lowerText = text.toLowerCase();
+  if (lowerWord.length <= 4) {
+    const regex = new RegExp(`\\b${lowerWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "i");
+    return regex.test(lowerText);
+  }
+  return lowerText.includes(lowerWord);
 }
 
 export function keywordBoost(query: string, embeddingText: string): number {
@@ -191,8 +224,8 @@ export async function rerankResults(
   const prompt = `You are a strict fashion search relevance ranker. Given a search query and a list of garment descriptions, return ONLY the IDs that genuinely match the query. Exclude items that do not match.
 
 Rules:
-- If the query mentions a color, the garment MUST contain that color
-- If the query mentions a garment type, the item MUST be that type
+- If the query mentions a color, the garment MUST contain that color or a closely related shade (e.g. "red" includes pink, rose, blush, crimson, maroon, burgundy; "blue" includes navy, cobalt, teal)
+- If the query mentions a garment type, the item MUST be that type or a close variant (e.g. "dress" includes sundress, gown)
 - Do NOT include loosely related items — only include clear matches
 - If no candidates match, return an empty array []
 
@@ -204,7 +237,7 @@ ${toRerank.map((c, i) => `[${c.id}] ${c.description}`).join("\n")}
 Return ONLY a JSON array of matching IDs in order of relevance (most relevant first). Return at most ${topK} IDs. No extra text.`;
 
   try {
-    const response = await getClient().chat.completions.create({
+    const response = await getGeminiClient().chat.completions.create({
       model: RERANK_MODEL,
       max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],

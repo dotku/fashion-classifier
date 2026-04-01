@@ -7,6 +7,7 @@ An AI-powered web app that helps fashion designers organize, search, and reuse i
 ### Prerequisites
 
 - Node.js 18+
+- [Neon Postgres database](https://neon.tech/) (free tier available)
 - [OpenRouter API key](https://openrouter.ai/) (for AI classification, embeddings, and reranking)
 - [Gemini API key](https://aistudio.google.com/apikey) (optional, for Gemini 2.5 Flash — free)
 
@@ -23,6 +24,7 @@ cp .env.example .env.local
 
 | Variable | Required | Description |
 |----------|----------|-------------|
+| `DATABASE_URL` | Yes | Neon Postgres connection string |
 | `OPENROUTER_API_KEY` | Yes | Used for classification models, text embeddings, reranking, and translation |
 | `GEMINI_API_KEY` | Optional | For Gemini 2.5 Flash classification (free tier) |
 | `PEXELS_API_KEY` | Optional | For downloading eval images from Pexels |
@@ -64,8 +66,8 @@ npm run test:e2e
 | Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | Styling | Tailwind CSS |
-| Database | SQLite (via better-sqlite3) |
-| Full-text Search | SQLite FTS5 |
+| Database | Postgres (Neon serverless) |
+| Full-text Search | Postgres GIN + tsvector |
 | AI Classification | Multi-model via OpenRouter + Gemini |
 | Text Embeddings | OpenAI text-embedding-3-small (via OpenRouter) |
 | Reranking | Claude Haiku 4.5 (via OpenRouter) |
@@ -122,13 +124,13 @@ npm run test:e2e
 
 ### Key Design Decisions
 
-1. **SQLite over Postgres/MongoDB**: Zero infrastructure for a proof-of-concept. SQLite's FTS5 extension provides full-text search without an extra service.
+1. **Neon Postgres**: Serverless Postgres with free tier. Schema auto-initializes on first request. Full-text search via GIN indexes with `tsvector`.
 
 2. **Multi-model via OpenRouter**: All major vision models accessible through one API using the OpenAI SDK. Gemini 2.5 Flash is the default (free). A single prompt requests both a natural-language description and structured attributes in one call.
 
-3. **Dynamic filters from data**: Filter options generated from `SELECT DISTINCT` queries. The filter UI adapts as more images are added. Filters use partial matching (`LIKE '%value%'`).
+3. **Dynamic filters from data**: Filter options extracted from distinct column values. The filter UI adapts as more images are added. Filters use partial matching (`ILIKE`).
 
-4. **Annotations stored separately**: Designer annotations are in a dedicated table with their own FTS index, clearly distinguished from AI-generated metadata.
+4. **Annotations stored separately**: Designer annotations are in a dedicated table, clearly distinguished from AI-generated metadata.
 
 5. **Hybrid search**: Combines semantic embeddings with keyword boosting and multilingual term mapping for better recall across languages.
 
