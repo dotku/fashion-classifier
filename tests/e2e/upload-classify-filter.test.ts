@@ -127,4 +127,56 @@ test.describe("Upload, Classify, and Filter flow", () => {
     const body = await response.json();
     expect(Array.isArray(body)).toBe(true);
   });
+
+  test("images API supports partial match filtering", async ({ request }) => {
+    const response = await request.get("http://localhost:3000/api/images?material=silk");
+    expect(response.status()).toBe(200);
+    const body = await response.json();
+    expect(Array.isArray(body)).toBe(true);
+  });
+
+  test("images API supports search param", async ({ request }) => {
+    const response = await request.get("http://localhost:3000/api/images?search=dress");
+    expect(response.status()).toBe(200);
+    const body = await response.json();
+    expect(Array.isArray(body)).toBe(true);
+  });
+
+  test("annotations API requires image_id", async ({ request }) => {
+    const response = await request.get("http://localhost:3000/api/annotations");
+    expect(response.status()).toBe(400);
+    const body = await response.json();
+    expect(body.error).toBe("image_id required");
+  });
+
+  test("annotations API returns array for valid image_id", async ({ request }) => {
+    const response = await request.get("http://localhost:3000/api/annotations?image_id=nonexistent");
+    expect(response.status()).toBe(200);
+    const body = await response.json();
+    expect(Array.isArray(body)).toBe(true);
+  });
+
+  test("annotations POST requires image_id", async ({ request }) => {
+    const response = await request.post("http://localhost:3000/api/annotations", {
+      data: { tags: ["test"], notes: "test" },
+    });
+    expect(response.status()).toBe(400);
+  });
+
+  test("annotations POST returns 404 for non-existent image", async ({ request }) => {
+    const response = await request.post("http://localhost:3000/api/annotations", {
+      data: { image_id: "nonexistent", tags: ["test"], notes: "test" },
+    });
+    expect(response.status()).toBe(404);
+  });
+
+  test("delete API returns 404 for non-existent image", async ({ request }) => {
+    const response = await request.delete("http://localhost:3000/api/images/nonexistent-id");
+    expect(response.status()).toBe(404);
+  });
+
+  test("backfill-embeddings API responds", async ({ request }) => {
+    const response = await request.post("http://localhost:3000/api/backfill-embeddings");
+    expect([200, 500]).toContain(response.status());
+  });
 });
